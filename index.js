@@ -3,6 +3,9 @@ const { BskyAgent } = bsky;
 import * as dotenv from 'dotenv';
 import { CronJob } from 'cron';
 import * as process from 'process';
+
+
+
 dotenv.config();
 const port = process.env.PORT || "8080";
 // Create a Bluesky Agent 
@@ -13,59 +16,23 @@ await agent.login({
     identifier: process.env.BLUESKY_USERNAME,
     password: process.env.BLUESKY_PASSWORD,
 });
-// Define emoji arrays
-const MOON_EMOJI = ['🌕', '🌖', '🌗', '🌘', '🌒', '🌓', '🌙', '🌜', '🌝', '🌚'];
-const SUN_EMOJI = ['🌞', '🌅', '🌄', '🌇', '⛅️', '🌤️', '🌥️', '🌦️'];
-const STORM_EMOJI = ['🌧️', '🌨️', '⛈️', '🌩️', '🌪️'];
-const CLEAR_EMOJI = ['☁️', ' '];
-const BIRD_EMOJI = ['🦅', '🕊️', '🦆', '🦜', '🐥', '🦉'];
-const FLORA_EMOJI = ['🌱', '🌷', '🌻', '🍀', '🌹', '🌴', '🌱', '🌵', '🌳', '🍄', '🌾', '🎋'];
-// Function to get random emoji from an array
-function getRandomEmoji(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-}
-// Function to print random emojis in random positions
-function printRandomEmojis() {
-    console.log("Running printRandomEmojis...");
-    const moonOrSun = Math.random() < 0.5 ? MOON_EMOJI : SUN_EMOJI;
-    const rainingOrClear = Math.random() < 0.5 ? STORM_EMOJI : CLEAR_EMOJI;
-    const emojiArrays = [moonOrSun, rainingOrClear, BIRD_EMOJI];
-    const emojis = emojiArrays.map((arr) => getRandomEmoji(arr));
-    // Add two random flora emojis to the last line
-    const flora1 = getRandomEmoji(FLORA_EMOJI);
-    let flora2 = getRandomEmoji(FLORA_EMOJI);
-    // Ensure the flora emojis are distinct
-    while (flora1 === flora2) {
-        flora2 = getRandomEmoji(FLORA_EMOJI);
-    }
-    // Generate random positions and repetitions for the flora emojis
-    const positions = [0, 1, 2, 3].map(() => Math.floor(Math.random() * 15)).sort((a, b) => a - b);
-    const repetitions = [Math.floor(Math.random() * 3) + 1, Math.floor(Math.random() * 3) + 1];
-    const floraLine = positions.map((position, index) => {
-        const emoji = index < repetitions[0] ? flora1 : flora2;
-        return ' '.repeat(position) + emoji;
-    }).join('');
-    let result = '';
-    emojis.forEach((emoji, index) => {
-        const randomPosition = Math.floor(Math.random() * 15);
-        result += ' '.repeat(randomPosition) + emoji;
-        if (index < emojis.length - 1) {
-            result += '\n';
-        }
-    });
-    result += '\n' + floraLine;
-    console.log(result);
-    postEmojisToBluesky(result);
-    return result;
-}
-async function postEmojisToBluesky(emojiString) {
+
+
+
+// Function to post "gm" to Bluesky
+async function postGMToBluesky() {
+    console.log("Posting 'gm' to Bluesky...");
     const response = await agent.post({
-        text: emojiString
+      text: "gm say it back...or else..."
     });
-}
-printRandomEmojis();
+  }
 // Run this on a cron job
-const scheduleExpressionMinute = '* * * * *'; // Run once every minute for testing
-const scheduleExpression = '0 */3 * * *'; // Run once every three hours in prod
-const job = new CronJob(scheduleExpression, printRandomEmojis);
+
+const scheduleExpressionEveryDayAt9AMEST = '0 9 * * *'; // Run every day at 9 AM EST
+
+const job = new CronJob({
+  cronTime: scheduleExpressionEveryDayAt9AMEST,
+  onTick: postGMToBluesky,
+  timeZone: 'America/New_York', // Set timezone to Eastern Standard Time (EST)
+});
 job.start();
