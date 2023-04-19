@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="global.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bluesky Scheduler</title>
+</head>
+<body>
+  <h1 class="title">Bluesky Scheduler</h1>
+
+  <!-- Login form -->
+  <form id="loginForm">
+    <h2>Login</h2>
+    <label for="loginUsername">Username:</label>
+    <input type="text" id="loginUsername" name="loginUsername" required>
+    <br>
+    <label for="loginPassword">Password:</label>
+    <input type="password" id="loginPassword" name="loginPassword" required>
+    <br>
+    <button type="submit">Login</button>
+  </form>
+
+  <!-- Scheduler form -->
+  <form id="scheduleForm" style="display: none;">
+    <h2>Schedule a post</h2>
+    <label for="message">Message:</label>
+    <input type="text" id="message" name="message" required>
+    <br>
+    <label for="time">Time (HH:mm):</label>
+    <input type="time" id="time" name="time" required>
+    <br>
+    <button type="submit">Schedule</button>
+  </form>
+
+  <button id="stop-schedule" style="display: none;">Stop Schedule</button>
+
+  <script src="client.js"></script>
+</body>
+</html>
